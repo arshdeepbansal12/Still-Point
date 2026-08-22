@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 
 import {
   CreateAssessmentSessionBody,
@@ -21,7 +21,7 @@ function serializeSession(row: typeof assessmentSessions.$inferSelect) {
   };
 }
 
-router.get("/assessment/sessions", async (_req: any, res: any, next: any) => {
+router.get("/assessment/sessions", async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const rows = await db.select().from(assessmentSessions).orderBy(desc(assessmentSessions.createdAt)).limit(30);
     res.json(ListAssessmentSessionsResponse.parse(rows.map(serializeSession)));
@@ -30,7 +30,7 @@ router.get("/assessment/sessions", async (_req: any, res: any, next: any) => {
   }
 });
 
-router.post("/assessment/sessions", async (req: any, res: any, next: any) => {
+router.post("/assessment/sessions", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const input = CreateAssessmentSessionBody.parse(req.body);
     const [row] = await db.insert(assessmentSessions).values({
@@ -44,7 +44,7 @@ router.post("/assessment/sessions", async (req: any, res: any, next: any) => {
   }
 });
 
-router.get("/assessment/sessions/:id", async (req: any, res: any, next: any) => {
+router.get("/assessment/sessions/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = GetAssessmentSessionParams.parse({ id: Number(req.params.id) });
     const [row] = await db.select().from(assessmentSessions).where(eq(assessmentSessions.id, id)).limit(1);
@@ -58,7 +58,7 @@ router.get("/assessment/sessions/:id", async (req: any, res: any, next: any) => 
   }
 });
 
-router.delete("/assessment/sessions/:id", async (req: any, res: any, next: any) => {
+router.delete("/assessment/sessions/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = DeleteAssessmentSessionParams.parse({ id: Number(req.params.id) });
     await db.delete(assessmentSessions).where(eq(assessmentSessions.id, id));
