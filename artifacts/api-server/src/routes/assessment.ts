@@ -39,7 +39,8 @@ router.post("/assessment/sessions", async (req: Request, res: Response, next: Ne
       answers: input.answers ?? [],
     }).returning();
     res.status(201).json(CreateAssessmentSessionResponse.parse(serializeSession(row)));
-  } catch (error) {
+  } catch (error: any) {
+    console.error("DB INSERT ERROR CAUSE:", error.cause || error);
     next(error);
   }
 });

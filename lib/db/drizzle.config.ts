@@ -1,6 +1,6 @@
 import { defineConfig } from "drizzle-kit";
 
-let dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+let dbUrl = process.env.POSTGRES_URL_NON_POOLING || process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 if (!dbUrl) {
   throw new Error("DATABASE_URL or POSTGRES_URL is not set");
