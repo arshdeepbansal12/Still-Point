@@ -2,10 +2,10 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "./schema";
 
-const dbUrl = process.env.DATABASE_URL;
+const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 if (!dbUrl) {
-  throw new Error("DATABASE_URL is not set");
+  throw new Error("DATABASE_URL or POSTGRES_URL is not set");
 }
 
 const pool = new pg.Pool({
