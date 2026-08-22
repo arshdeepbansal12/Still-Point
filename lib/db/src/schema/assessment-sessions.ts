@@ -1,18 +1,18 @@
 import { sql } from "drizzle-orm";
-import { text, sqliteTable, real, integer } from "drizzle-orm/sqlite-core";
+import { text, pgTable, real, timestamp, boolean, jsonb, serial } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
-export const assessmentSessions = sqliteTable("assessment_sessions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  createdAt: text("created_at").default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+export const assessmentSessions = pgTable("assessment_sessions", {
+  id: serial("id").primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   mcqScore: real("mcq_score").notNull(),
   finalScore: real("final_score").notNull(),
   band: text("band").notNull(),
-  categoryScores: text("category_scores", { mode: "json" }).notNull(),
-  facialDataUsed: integer("facial_data_used", { mode: "boolean" }).notNull().default(false),
+  categoryScores: jsonb("category_scores").notNull(),
+  facialDataUsed: boolean("facial_data_used").notNull().default(false),
   facialTensionIndex: real("facial_tension_index"),
-  crisisFlag: integer("crisis_flag", { mode: "boolean" }).notNull().default(false),
-  answers: text("answers", { mode: "json" }).notNull().default('[]'),
+  crisisFlag: boolean("crisis_flag").notNull().default(false),
+  answers: jsonb("answers").notNull().default([]),
   journalEntry: text("journal_entry"),
 });
 
