@@ -93,7 +93,7 @@ function CameraFeed({ onTensionChange }: { onTensionChange?: (index: number | nu
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [dominantEmotion, setDominantEmotion] = useState<{ emotion: string, score: number } | null>(null);
-  const trackingRef = useRef<number>();
+  const trackingRef = useRef<number | null>(null);
 
   useEffect(() => {
     Promise.all([
