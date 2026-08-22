@@ -8,11 +8,6 @@ if (!dbUrl) {
   throw new Error("DATABASE_URL or POSTGRES_URL is not set");
 }
 
-// Suppress pg security warnings about sslmode=require
-if (dbUrl.includes("sslmode=require")) {
-  dbUrl = dbUrl.replace("sslmode=require", "sslmode=verify-full");
-}
-
 const pool = new pg.Pool({
   connectionString: dbUrl,
 });

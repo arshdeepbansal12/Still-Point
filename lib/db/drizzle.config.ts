@@ -6,10 +6,6 @@ if (!dbUrl) {
   throw new Error("DATABASE_URL or POSTGRES_URL is not set");
 }
 
-if (dbUrl.includes("sslmode=require")) {
-  dbUrl = dbUrl.replace("sslmode=require", "sslmode=verify-full");
-}
-
 export default defineConfig({
   schema: "./src/schema/index.ts",
   dialect: "postgresql",
