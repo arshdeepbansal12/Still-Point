@@ -8,6 +8,10 @@ if (!dbUrl) {
 
 dbUrl = dbUrl.replace("?sslmode=require", "").replace("&sslmode=require", "").replace("sslmode=require", "");
 
+if (dbUrl.includes(".pooler.supabase.com:6543")) {
+  dbUrl = dbUrl.replace(":6543", ":5432");
+}
+
 export default defineConfig({
   schema: "./src/schema/index.ts",
   dialect: "postgresql",
