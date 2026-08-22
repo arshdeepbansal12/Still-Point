@@ -1,0 +1,152 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: assessments
+    description: Stress assessment sessions
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /assessment/sessions:
+    get:
+      operationId: listAssessmentSessions
+      tags: [assessments]
+      summary: List recent assessment sessions
+      responses:
+        "200":
+          description: Recent sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AssessmentSession"
+    post:
+      operationId: createAssessmentSession
+      tags: [assessments]
+      summary: Save a completed assessment session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssessmentSessionInput"
+      responses:
+        "201":
+          description: Saved session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssessmentSession"
+  /assessment/sessions/{id}:
+    get:
+      operationId: getAssessmentSession
+      tags: [assessments]
+      summary: Get one assessment session
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Assessment session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssessmentSession"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteAssessmentSession
+      tags: [assessments]
+      summary: Delete an assessment session
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+components:
+  parameters:
+    SessionId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: number
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    AssessmentSessionInput:
+      type: object
+      required: [mcqScore, finalScore, band, categoryScores, facialDataUsed, crisisFlag]
+      properties:
+        mcqScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        finalScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        band:
+          type: string
+          enum: [low, moderate, high]
+        categoryScores:
+          type: object
+          required: [emotional, physical, behavioral]
+          properties:
+            emotional: { type: number, minimum: 0, maximum: 100 }
+            physical: { type: number, minimum: 0, maximum: 100 }
+            behavioral: { type: number, minimum: 0, maximum: 100 }
+        facialDataUsed:
+          type: boolean
+        facialTensionIndex:
+          type: ["number", "null"]
+          minimum: 0
+          maximum: 100
+        crisisFlag:
+          type: boolean
+        answers:
+          type: array
+          items:
+            type: object
+            required: [questionId, answerValue]
+            properties:
+              questionId: { type: string }
+              answerValue: { type: number, minimum: 0, maximum: 4 }
+        journalEntry:
+          type: string
+          nullable: true
+    AssessmentSession:
+      allOf:
+        - $ref: "#/components/schemas/AssessmentSessionInput"
+        - type: object
+          required: [id, createdAt]
+          properties:
+            id: { type: number }
+            createdAt: { type: string, format: date-time }
+

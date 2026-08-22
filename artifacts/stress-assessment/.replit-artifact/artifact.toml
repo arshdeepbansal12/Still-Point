@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Stress Assessment"
+description = "A privacy-first wellness self-check that combines a validated-style questionnaire with optional on-device facial expression insights and personalized self-care guidance."
+version = "1.0.0"
+id = "artifacts/stress-assessment"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23289
+
+[services.development]
+run = "pnpm --filter @workspace/stress-assessment run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/stress-assessment", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/stress-assessment/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23289"
+BASE_PATH = "/"

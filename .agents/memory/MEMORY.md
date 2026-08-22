@@ -1,0 +1,1 @@
+- [Safety scoring](safety-scoring.md) — keep self-harm screening separate from wellness stress scoring and never infer crisis risk from facial signals.
